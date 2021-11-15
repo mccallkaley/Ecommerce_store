@@ -1,0 +1,31 @@
+{% extends 'base.html.j2' %}
+{% block content %}
+<div class="row">
+    {% for product in products %}
+    
+
+        <div class="col-sm">
+	        <div class="card">
+			  	<img src="/static/product{{ product.id }}.JPG" class="card-img-top" alt="...">
+			  	<div class="card-body">
+					<div>
+						<b>
+						{{ product.product_name }}
+						</b>
+					</div>					    
+				    <p class="card-text">{{ product.price}}</p>
+					<div id="add_to_cart">
+						<a href="/add_to_cart/{{product.id}}">Add to cart</a>
+					</div>
+        		</div>
+			</div>
+		</div>
+
+	
+            
+
+
+    {% endfor %}
+</div>
+{% endblock content %}
+{% endblock %}

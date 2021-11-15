@@ -1,0 +1,22 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "askForPassword": true,
+            "driver": "PostgreSQL",
+            "name": "Ecommerce",
+            "connectString": "postgres://hstditdr:TAtZM_5e0GyIzsHCob2W2uTa3C2gWX9K@fanny.db.elephantsql.com/hstditdr"
+        },
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "askForPassword": true,
+            "driver": "PostgreSQL",
+            "name": "Ecomerce_right",
+            "connectString": "postgres://wuictuqq:JM6zQMJ2kWLFRyoRratTcPDZn6SgjnrI@fanny.db.elephantsql.com/wuictuqq"
+        }
+    ]
+}

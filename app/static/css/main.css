@@ -1,0 +1,12 @@
+.container{
+    margin-top: 50px;
+}
+
+body{
+    background-color:pink;
+}
+h1 {
+    color: hsl(340, 92%, 43%);
+    
+    text-align: center;
+}

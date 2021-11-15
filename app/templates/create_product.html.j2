@@ -1,0 +1,41 @@
+{% extends 'base.html.j2'%}
+{% block title %}
+Create Product
+{% endblock %}
+
+{% block content%}
+
+<div class="form-div">
+  <h1>Create Product</h1>
+  <small style="color:red">{{error}}</small>
+
+  <form action="" method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    {{ form.product_name.label(class="form-label") }}
+    {{ form.name(class="form-control") }}
+    {% for error in form.name.errors %}
+      {{ error }}
+    {% endfor %}
+
+
+    {{ form.description.label(class="form-label") }}
+    {{ form.description(class="form-control") }}
+
+    {{ form.price.label(class="form-label") }}
+    {{ form.price(class="form-control") }}
+
+    {{ form.image.label() }}
+    {{ form.image(class="form-control-file mt-2") }}
+    {% if form.img.errors %}
+          {% for error in form.image.errors %}
+                  <span class="text-danger">{{ error }}</span><br>
+          {% endfor %}
+      {% endif %}
+    {{ form.submit(class="btn btn-primary mt-2") }}
+  </form>
+
+
+
+</div>
+
+{% endblock %}

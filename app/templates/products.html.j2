@@ -1,0 +1,17 @@
+{% extends 'base.html.j2' %}
+{% block title %}
+Products
+{% endblock %}
+{{% block content %}
+  <article class="media content-section">
+    <div class="media-body">
+      <div class="article-metadata">
+      <h2 class="article-title">{{ product.product_name }}</h2>
+      <p class="article-content">{{ product.price }}</p>
+      <div id="add_to_Cart">
+		<a href="/add_to_cart/{{product.id}}">Add to cart</a>
+	</div>
+    </div>
+  </article>
+  
+{% endblock content %}
