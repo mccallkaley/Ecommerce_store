@@ -1,10 +1,10 @@
 from sqlalchemy.orm import backref
 from app import db
 from flask_login import current_user,  UserMixin
-from datetime import datetime as dt
+from datetime import datetime as dt, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 from app import login
-
+import secrets
 #step one create tables (model
 # make a new database in elephant sql)
 # hide in .env
@@ -21,10 +21,43 @@ class User(UserMixin, db.Model):
     created_on = db.Column(db.DateTime, default=dt.utcnow) #ut universal time zone  always do this
     products = db.relationship("Product", backref="author", lazy=True)
     cart = db.relationship("Cart", backref="user", lazy=True)
+    token = db.Column(db.String, index=True, unique=True)
+    token_exp = db.Column(db.DateTime)
+    is_admin = db.Column(db.Boolean, default=False)
 
     #give methods to take instance of user class
     def __repr__(self):  #will print out when you print your object
         return f'<User: {self.id} | {self.email}>'
+
+    ##################################################
+    ############## Methods for Token auth ############
+    ##################################################
+
+    def get_token(self, exp=86400):
+        current_time = dt.utcnow()
+        # give the user their token if the token is not expired
+        if self.token and self.token_exp > current_time + timedelta(seconds=60):
+            return self.token
+        # if not a token create a token and exp date
+        self.token = secrets.token_urlsafe(32)
+        self.token_exp = current_time + timedelta(seconds=exp)
+        self.save()
+        return self.token
+
+    def revoke_token(self):
+        self.token_exp = dt.utcnow() - timedelta(seconds=61)
+
+    @staticmethod
+    def check_token(token):
+        u = User.query.filter_by(token=token).first()
+        if not u or u.token_exp < dt.utcnow():
+            return None
+        return u
+
+    #########################################
+    ############# End Methods for tokens ####
+    #########################################
+
 
 
     #McCall = User()
@@ -78,9 +111,19 @@ class Product(db.Model):
     date_updated = db.Column(db.DateTime, onupdate=dt.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id')) #pulls in user id  from user table
     cart = db.relationship("Cart", backref="products", lazy=True)
+    category_id = db.Column(db.ForeignKey('category.id'))
+    
     
     def __repr__(self):
-        return f'<Item: {self.id} | {self.name}>'
+        return f'<Product: {self.id} | {self.name}>'
+
+    def add_to_cart(self, user):
+        self.owner = user.id
+        db.session.commit()
+
+    def remove_from_cart(self):
+        self.owner = None
+        db.session.commit()
 
     def save(self):
         db.session.add(self)
@@ -93,13 +136,21 @@ class Product(db.Model):
         def __repr__(self):
             return f"{self.name}"
 
+    def to_dict(self):
+        data={
+            'id':self.id,
+            "name":self.name,
+            "price":self.price,
+            "image":self.image,
+            "created_on":self.created_on
+        }
+        return data
+
     def from_dict(self, data):
-            self.product_name = data['product_name']
-            self.image = data['img']
-            self.description = data['description']
-            self.user_id = data['user_id']
-            self.price = data['price']
-            self.save()
+        for field in ["name","price","image","description"]:
+            if field in data:
+                setattr(self, field, data[field])
+        return data
 
     def total_price(self, user_id):
         price_list = []
@@ -113,6 +164,30 @@ class Product(db.Model):
         db.session.add(self)
         db.session.commit()
 
+
+
+class Category(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200))
+    products = db.relationship('Product', cascade ='all, delete-orphan',  backref="category")
+
+    def __repr__(self):
+        return f'<Catergoy: {self.id} | {self.name}>'
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+    
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def to_dict(self):
+        data={
+            "id": self.id,
+            "name": self.name
+        }
+        return data
 
 class Cart(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -12,13 +12,15 @@
               <a class="nav-link" aria-current="page" href="{{url_for('main.index')}}">Home</a>
               </li>
               <li class="nav-item">
-              <a class="nav-item nav-link" href="{{ url_for('main.select_products') }}">Products</a>
+              <a class="nav-item nav-link" href="{{ url_for('main.products') }}">Products</a>
               </li>
               <li class="nav-item">
               <a class="nav-link" href="{{url_for('main.cart')}}">Cart</a>
               </li>
               <a class="nav-link" href="{{url_for('auth.logout')}}">Logout</a>
               </li>
+
+
             {% else %}
               <li class="nav-item">
               <a class="nav-link" href="{{url_for('auth.register')}}">Register</a>
@@ -26,6 +28,7 @@
               <li class="nav-item">
               <a class="nav-link" href="{{url_for('auth.login')}}">Login</a>
               </li>
+                        
             {% endif %}
         </ul>
 

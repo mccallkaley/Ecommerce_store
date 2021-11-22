@@ -10,29 +10,29 @@ Shopping Cart
 {% if not cart %}
 	
 	<p>Your cart is currently empty.</p>
-    <a href="{{ url_for('main.create_product') }}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">CONTINUE SHOPPING</a>
+    <a href="{{ url_for('main.products') }}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">CONTINUE SHOPPING</a>
 {% else %}    
     <div style=" text-align: right;">Price</div>
-		<div id="tableItems" >
+		<div id="tableproducts" >
 
-			{% for item in cart %}
+			{% for product in cart %}
 			
 				<hr>
-				<div id="itemName" style=" text-align: 	left;">
-					<img src="/static/product{{ item.id }}.JPG" class="card-img-top" alt="..." style="height: 80px; width:80px">
-					<span id="itemNameTag">{{item.name}}</span>
+				<div id="productName" style=" text-align: 	left;">
+					<img src="/static/product{{ product.id }}.JPG" class="card-img-top" alt="..." style="height: 80px; width:80px">
+					<span id="productNameTag">{{product.product_name}}</span>
 
-					<span id="itemNameTag"><div style=" text-align: right">${{item.price}}</div></span>
+					<span id="productNameTag"><div style=" text-align: right">${{product.price}}</div></span>
 
 				    <form action="{{ url_for('cart') }}" method="post">
     					<div class="form-group">
         
     
 
-	        				<input type="hidden" name="idpd" value="{{item.id}}"/>
+	        				<input type="hidden" name="idpd" value="{{product.id}}"/>
 						    <select class="form-control" id="exampleFormControlSelect1" style="width:70px; height: 30px" name="qty">
 						      <option disabled="Quantity">Qty</option>
-						      <option selected="QtyinCart">{{item.quantity}}</option>
+						      <option selected="QtyinCart">{{product.quantity}}</option>
 						      <option>1</option>
 						      <option>2</option>
 						      <option>3</option>
@@ -42,7 +42,7 @@ Shopping Cart
 
 						    <button class="btn btn-primary" type="submit">Update</button>
 
-							<a href="/removeFromCart/{{item.id}}">Delete</a>
+							<a href="/removeFromCart/{{product.id}}">Delete</a>
 						</div>
 					</form>
 				</div>

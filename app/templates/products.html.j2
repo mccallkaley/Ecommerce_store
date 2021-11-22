@@ -1,17 +1,98 @@
 {% extends 'base.html.j2' %}
 {% block title %}
-Products
+Products Page
 {% endblock %}
-{{% block content %}
-  <article class="media content-section">
-    <div class="media-body">
-      <div class="article-metadata">
-      <h2 class="article-title">{{ product.product_name }}</h2>
-      <p class="article-content">{{ product.price }}</p>
-      <div id="add_to_Cart">
-		<a href="/add_to_cart/{{product.id}}">Add to cart</a>
-	</div>
-    </div>
-  </article>
-  
-{% endblock content %}
+{% block content %}
+
+<div class="row" style="margin-top:20px; margin-left:20px">
+   <div class="col-8">
+       <h2>Artistry Makeup Products</h2>
+       <img class="rounded mx-auto d-block" style="max-height:200px;border-radius:50%;" src="https://media.kohlsimg.com/is/image/kohls/4871968?wid=600&hei=600&op_sharpen=1" alt="">
+       <div class="create_button" style="float:right;margin:0px 20px 20px 0px;">
+         {% if current_user.is_admin %}
+            <form method="POST" action="{{url_for('main.create_product')}}">
+               <button class="btn btn-outline btn-success" type="submit">Create Product</button>
+            </form>
+         {% endif %}
+       </div>
+       <br>
+      <table class="table table-hover table-dark">
+         <thead>
+            <tr>
+               <th scope="col">ID</th>
+               <th scope="col">Name</th>
+               <th scope="col">Price</th>
+               <th scope="col">Options</th>
+            </tr>
+         </thead>
+         <tbody>
+            {% for product in products %}
+
+            <tr>
+               <td>{{ product.id }}</td>
+               <td>{{ product.product_name }}</td>
+               <td>${{ product.price }}</td>
+               <td> <img src="{{product.image}}"  width="100" height="100"></td>
+               <td>
+                  <form method="POST" action="{{url_for('main.show_product', id=product.id)}}">
+                     <button class="btn btn-outline btn-info" type="submit">Info</button>
+                  </form>
+               </td>
+               <td>
+                  <form method="POST" action="{{url_for('main.add_to_cart', id=product.id)}}">
+                     <button class="btn btn-outline btn-success" type="submit">Add</button>
+                  </form>
+               </td>
+
+               {% if current_user.is_admin %}
+               <td>
+                  <form method="GET" action="{{url_for('main.edit_product', id=product.id)}}">
+                     <button class="btn btn-outline btn-warning" type="submit">Edit</button>
+                  </form>
+               </td>
+               <td>
+                  <form method="POST" action="{{url_for('main.deletefromcart', id=product.id)}}">
+                     <button class="btn btn-outline btn-danger" type="submit">Delete</button>
+                  </form>
+               </td>
+               {% endif %}
+               </td>
+            </tr>
+            {% endfor %}
+         </tbody>
+      </table>
+   </div>
+   <div class="col-4">
+        <h2>My Total</h2>
+        <p></p>
+        <br> 
+        {% for product in current_user.cart %}
+         <div class="row">
+            <div class="col-md-8 cart_product_text" style="float:left;padding:10px;">
+               {{ product.name }} - ${{ product.price }}
+            </div>
+            
+            <div class="col-md-4 cart_product_remove_btn" style="float:right;padding:10px;">
+               <form method="POST" action="{{url_for('main.remove_product', id=product.id)}}">
+                  <button class="btn btn-outline btn-danger btn-sm" type="submit">Remove</button>
+               </form>
+            </div>
+         </div>
+        {% endfor %}
+        <br><br><br><br>
+         <div class="row">
+            <div class="col-md-7 cart_total" style="float:left;padding:5px;">
+               Total: ${{ cart_total }}
+            </div>
+
+            <div class="col-md-5 empty_cart_btn" style="float:right;padding:5px;">
+                  <form method="POST" action="{{url_for('main.deleteallfromcart')}}">
+                     <button class="btn btn-outline btn-warning btn-sm" type="submit">Clear cart</button>
+                  </form>
+            </div>
+
+         </div>
+
+   </div>
+</div>
+{% endblock %}

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, RadioField 
+from wtforms import StringField, PasswordField, SubmitField, RadioField, FloatField 
 #from wtforms.fields.core import FloatField
 from wtforms.fields.simple import FileField
 from wtforms.validators import Email, DataRequired, EqualTo, ValidationError 
@@ -80,3 +80,11 @@ class SearchForm(FlaskForm):
         csrf = False
     search = StringField('Search', validators=[DataRequired()])
     submit = SubmitField('Submit')
+
+    
+class ProductEditingForm(FlaskForm):
+    product_name = StringField('Name', validators=[DataRequired()])
+    price = FloatField('Price', validators=[DataRequired()])
+    image = StringField('Image Link')
+    description = StringField('Description')
+    submit = SubmitField('Submit Edit')

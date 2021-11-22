@@ -4,6 +4,33 @@ from app.models import User
 from flask_login import login_user, current_user, logout_user, login_required
 from .import bp as auth
 
+from app.models import User
+from flask import g, make_response, request
+
+
+from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
+from app.models import User
+from flask import g
+
+
+basic_auth = HTTPBasicAuth()
+token_auth = HTTPTokenAuth()
+
+@basic_auth.verify_password
+def verify_password(email, password):
+    # check if user exists
+    u = User.query.filter_by(email=email).first()
+    if u is None:
+        return False
+    g.current_user = u
+    # check password
+    return u.check_hashed_password(password)
+
+@token_auth.verify_token
+def verify_token(token):
+    u = User.check_token(token) if token else None
+    g.current_user = u
+    return g.current_user or None
 
 @auth.route('/login', methods=['GET','POST'])
 def login():
@@ -31,6 +58,38 @@ def logout():
         logout_user()
         flash('You have logged out', 'danger')
         return redirect(url_for('auth.login'))
+
+
+
+@auth.get('/token')
+@basic_auth.login_required()
+def get_token():
+    user = g.current_user
+    token = user.get_token()
+    return make_response({"token":token},200)
+
+# makes a user an Admin
+# {"id":5}
+@auth.put('/admin')
+@token_auth.login_required()
+def make_admin():
+    user_id_to_be_admin = request.get_json().get('id')
+    if not user_id_to_be_admin:
+        return make_response("Invalid payload", 400)
+    if not g.current_user.is_admin:
+        return make_response("This action requires Admin privs", 403)
+    user = User.query.get(user_id_to_be_admin)
+    if not user:
+        return make_response("User does not exist!", 404)
+    user.is_admin = True
+    user.save()
+    return make_response(f'{user.first_name} {user.last_name} is now an Admin', 200)
+
+@auth.get('/admin')
+@token_auth.login_required()
+def get_admin():
+    return make_response({"isAdmin":g.current_user.is_admin or False}, 200)
+
 
 
 @auth.route('/register', methods=['GET', 'POST'])

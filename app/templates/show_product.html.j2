@@ -1,0 +1,38 @@
+
+{% extends 'base.html.j2' %}
+{% block title %}
+    Product with Image
+{% endblock %}
+
+
+{% block content %}
+  <div class="modal-header">
+    <h5 class="modal-title" id="ModalLabel">
+      <!-- -->
+      {{ product.name }} ${{ product.price }}
+    </h5>
+  </div>
+
+  <div class="container">
+    <div class="product_img">
+      <img id="product_imagr" src="{{product.image}}" alt="product image" style="margin: 20px 0vw;
+                                                                    max-width:500px;
+                                                                    border:solid;
+                                                                    border-color:black;
+                                                                    border-width:6px;">
+    </div>
+
+    <div class="description">
+      {{ product.description }}
+    </div>
+
+    <div class="">
+      <form method="POST" action="{{url_for('main.products')}}">
+        <button type="submit" class="btn btn-secondary" data-dismiss="">
+                Back
+        </button>
+      </form>
+    </div>
+
+  </div>
+{% endblock %}

@@ -1,6 +1,6 @@
 {% extends 'base.html.j2' %}
 {% block title %}
-    Create Product
+    Edit Product
 {% endblock %}
 
 {% block content %}
@@ -10,19 +10,17 @@
             {{ form.hidden_tag() }}
             <img class="mb-4" style="max-height:200px;border-radius:50%;" src="https://media.kohlsimg.com/is/image/kohls/4871968?wid=600&hei=600&op_sharpen=1" alt="">
             <h1 class="h3 mb-3 font-weight-normal">
-                Create Product
+                Edit Product
             </h1>
             <br>
             {{ form.product_name.label() }}
-            {{ form.product_name(class="form-control", placeholder="Name") }}
+            {{ form.product_name(class="form-control", placeholder="product_name") }}
 
             {{ form.price.label() }}
             {{ form.price(class="form-control", placeholder="Price") }}
 
             {{ form.image.label() }}
             {{ form.image(class="form-control", placeholder="Image Link") }}
-
-        
 
             <br>
 
